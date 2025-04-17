@@ -1,41 +1,34 @@
-import os
+import os  # Add at top
 
 def main():
-    print("=== FILE HANDLING WITH ERROR HANDLING ===")
+    print("=== FILE HANDLER ===")
     
-    # Ask user for filename
+    # Get filename (unchanged)
     filename = input("Enter filename (e.g., test.txt): ").strip()
     
     try:
-        # CREATE/WRITE TO FILE
-        with open(filename, 'w') as f:
-            f.write("Line 1: Hello World\n")
-            f.write("Line 2: 12345\n")
-        print(f"\n✅ Successfully created '{filename}'")
+        # === NEW: STEP 2 VALIDATION (MINIMAL VERSION) ===
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"'{filename}' doesn't exist")
+        if not os.access(filename, os.R_OK):
+            raise PermissionError(f"Can't read '{filename}'")
+        # === END OF STEP 2 ADDITIONS ===
         
-        # READ FILE
+        # YOUR EXISTING CODE (keep all read/write/append logic)
         with open(filename, 'r') as f:
-            print("\n📄 FILE CONTENTS:")
-            print(f.read())
-        
-        # APPEND TO FILE
-        with open(filename, 'a') as f:
-            f.write("Line 3: Appended text\n")
-        print(f"\n✅ Successfully appended to '{filename}'")
-        
-        # READ AGAIN
-        with open(filename, 'r') as f:
-            print("\n📄 UPDATED CONTENTS:")
+            print("\n📄 CONTENTS:")
             print(f.read())
             
-    except FileNotFoundError:
-        print(f"\n❌ Error: Folder does not exist")
-    except PermissionError:
-        print(f"\n❌ Error: Permission denied for '{filename}'")
+        # ... [rest of your operations] ...
+        
+    except FileNotFoundError as e:
+        print(f"\n❌ File Error: {e}")
+    except PermissionError as e:
+        print(f"\n❌ Access Error: {e}")
     except Exception as e:
-        print(f"\n❌ Unexpected error: {type(e).__name__} - {e}")
+        print(f"\n❌ Unexpected Error: {e}")
     finally:
-        print("\nProgram finished.")
+        print("\nDone.")
 
 if __name__ == "__main__":
     main()
